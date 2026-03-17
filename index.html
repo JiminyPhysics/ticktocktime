@@ -12,54 +12,39 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
+    align-items: center;
     background: #FFF9F0;
     background-image: radial-gradient(circle at 20% 20%, #FFE8E8 0%, transparent 40%),
                       radial-gradient(circle at 80% 80%, #E8F8FF 0%, transparent 40%);
     font-family: 'Nunito', sans-serif;
     overflow: hidden;
-    user-select: none;
-    -webkit-user-select: none;
+    user-select: none; -webkit-user-select: none;
   }
 
-  /* ── Donation bar ── */
-  #donation-bar {
+  /* Every direct child of body gets the same fixed width — one centre axis */
+  body > * {
+    width: 100%;
+    max-width: 520px;
     flex-shrink: 0;
-    text-align: center;
-    padding: 8px 12px 28px;
   }
-  #donation-bar a {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    text-decoration: none;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 700;
-    font-size: 0.75rem;
-    color: #a0845c;
-    background: #fffbf0;
-    border: 1.5px solid #ffe0a0;
-    border-radius: 50px;
-    padding: 5px 16px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    transition: all 0.15s;
-  }
-  #donation-bar a:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
 
-  /* ── Tab bar ── */
+  /* Clock zone is the only one that grows */
+  #clock-zone { flex: 1; min-height: 0; flex-shrink: 1; }
+
+  /* ── Row 1: Main tab bar ── */
   #tabs {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    padding: 24px 12px 6px;
-    flex-shrink: 0;
+    gap: 12px;
+    padding: 22px 16px 6px;
+    width: 100%;
   }
-
   .tab-btn {
     font-family: 'Nunito', sans-serif;
     font-weight: 900;
-    font-size: 1rem;
-    padding: 7px 24px;
-    min-width: 130px;
+    font-size: 1.15rem;
+    padding: 10px 0;
+    width: 160px;
     text-align: center;
     border-radius: 50px;
     border: 3px solid transparent;
@@ -69,114 +54,111 @@
     color: #aaa;
     box-shadow: 0 3px 10px rgba(0,0,0,0.08);
   }
-  .tab-btn.active-explore {
-    background: linear-gradient(135deg, #FF6B6B, #FF9B9B);
-    color: white;
-    box-shadow: 0 6px 16px rgba(255,107,107,0.35);
-    transform: translateY(-1px);
+  .tab-btn.active-explore { background: linear-gradient(135deg,#FF6B6B,#FF9B9B); color:white; box-shadow:0 6px 16px rgba(255,107,107,0.35); }
+  .tab-btn.active-quiz    { background: linear-gradient(135deg,#4ECDC4,#7EDDD8); color:white; box-shadow:0 6px 16px rgba(78,205,196,0.35); }
+
+  /* ── Quiz score bar — fixed row, always same height ── */
+  #quiz-score-bar {
+    visibility: hidden;
+    width: 100%;
+    padding: 2px 20px 0;
+    flex-shrink: 0;
   }
-  .tab-btn.active-quiz {
-    background: linear-gradient(135deg, #4ECDC4, #7EDDD8);
-    color: white;
-    box-shadow: 0 6px 16px rgba(78,205,196,0.35);
-    transform: translateY(-1px);
+  #quiz-score-bar.visible { visibility: visible; }
+  .score-slot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
   }
 
-  /* ── Screens ── */
-  #main {
-    flex: 1;
-    overflow-y: auto;
-    padding: 2px 16px 0;
-    max-width: 560px;
+  /* ── Row 2: Top info panel (fixed height, all modes) ── */
+  #top-panel {
+    height: 56px;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    position: relative;
     width: 100%;
-    margin: 0 auto;
+  }
+  /* Each top-panel state is absolute — height never changes */
+  .tp-state {
+    position: absolute;
+    inset: 0;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+  }
+  .tp-state.visible { opacity: 1; pointer-events: auto; }
+
+  /* ── Row 3: The ONE clock — fills remaining space ── */
+  #clock-zone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+    padding: 0 16px;
+    width: 100%;
+  }
+  #clock-zone svg {
+    display: block;
+    width: 100%;
+    max-width: 380px;
+    touch-action: none;
+  }
+  #clock-filter-wrap {
+    width: 100%;
+    max-width: 380px;
+    filter: drop-shadow(0 8px 24px rgba(0,0,0,0.13));
+    transition: filter 0.3s;
   }
 
-  /* screens fill the available height */
-  .screen { display: none; flex: 1; flex-direction: column; }
-  .screen.active { display: flex; }
-
-
-  /* ── Explore layout ── */
-  #explore-inner {
+  /* ── Row 4: Bottom panel (fixed height, all modes) ── */
+  #bottom-panel {
+    height: 190px;
+    position: relative;
+    width: 100%;
+  }
+  .bp-state {
+    position: absolute;
+    inset: 0 16px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
-    flex: 1;
-    padding-bottom: 8px;
+    gap: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
   }
+  .bp-state.visible { opacity: 1; pointer-events: auto; }
 
-  .legend-row {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .legend-pill {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border-radius: 50px;
-    padding: 6px 16px;
-    font-weight: 800;
-    font-size: 0.9rem;
-  }
-  .legend-pill.hour { background: #FFD6D6; color: #FF6B6B; }
-  .legend-pill.min  { background: #C8F5F3; color: #2aada4; }
-  .legend-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
-
-  .clock-wrap {
-    width: 100%;
-    max-width: 380px;
-    filter: drop-shadow(0 10px 30px rgba(0,0,0,0.13));
-  }
-  .clock-wrap svg { display: block; width: 100%; touch-action: none; }
-
-  .drag-hint { font-size: 0.78rem; color: #ccc; margin-top: -4px; }
-
-  .digital-display {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: white;
-    border-radius: 18px;
-    padding: 7px 22px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.09);
-    font-size: 2rem;
-    font-weight: 900;
-  }
-  .dh { color: #FF6B6B; }
-  .dc { color: #ddd; }
-  .dm { color: #4ECDC4; }
-
-  .words-bubble {
-    background: #FFD93D;
-    border-radius: 18px;
-    padding: 8px 20px;
-    font-weight: 900;
-    font-size: 1.15rem;
-    color: #5a4500;
-    box-shadow: 0 4px 14px rgba(255,217,61,0.4);
-    text-align: center;
-  }
-
-  /* ── Quiz layout ── */
+  /* ── Row 5: Quiz subtabs — always takes up space, just hidden in explore ── */
   #quiz-subtabs {
     display: flex;
-    gap: 8px;
     justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 10px;
+    gap: 12px;
+    padding: 4px 16px 6px;
+    width: 100%;
+    visibility: hidden;
   }
+  #quiz-subtabs.visible { visibility: visible; }
   .subtab-btn {
     font-family: 'Nunito', sans-serif;
     font-weight: 800;
-    font-size: 0.9rem;
-    padding: 7px 18px;
+    font-size: 1rem;
+    padding: 7px 0;
+    width: 170px;
+    text-align: center;
     border-radius: 50px;
     cursor: pointer;
     background: white;
@@ -184,192 +166,201 @@
     color: #bbb;
     transition: all 0.15s;
   }
-  .subtab-btn.active {
-    background: #F5EEFF;
-    border-color: #A855F7;
-    color: #A855F7;
-  }
+  .subtab-btn.active { background:#F5EEFF; border-color:#A855F7; color:#A855F7; }
 
-  .quiz-card {
-    background: white;
-    border-radius: 24px;
-    padding: 14px 16px;
-    box-shadow: 0 6px 28px rgba(0,0,0,0.09);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    flex: 1;
-    justify-content: space-evenly;
-    margin-bottom: 8px;
-  }
-
-  .score-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    max-width: 400px;
-    font-weight: 800;
-    color: #aaa;
-    font-size: 1rem;
-  }
-  .score-row .sh { color: #FF6B6B; }
-
-  .quiz-question {
-    font-weight: 900;
-    font-size: 1.1rem;
-    color: #444;
-  }
-
-  .answers-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    width: 100%;
-    max-width: 400px;
-  }
-
-  .ans-btn {
-    font-family: 'Nunito', sans-serif;
-    font-weight: 800;
-    font-size: 0.9rem;
-    background: white;
-    border: 2px solid #eee;
-    color: #555;
-    border-radius: 14px;
-    padding: 10px 6px;
-    cursor: pointer;
-    line-height: 1.3;
-    transition: all 0.1s;
-  }
-  .ans-btn:hover:not(:disabled) { border-color: #4ECDC4; transform: scale(1.02); }
-  .ans-btn.correct { background: #E6FAF0; border-color: #6BCB77; color: #1a7a3f; }
-  .ans-btn.wrong   { background: #FFF0F0; border-color: #FF6B6B; color: #a33; }
-
-  .feedback {
-    font-weight: 900;
-    font-size: 1.2rem;
+  /* ── Row 6: Donation ── */
+  #donation-bar {
     text-align: center;
+    padding: 6px 12px 22px;
   }
-  .feedback.good { color: #6BCB77; }
-  .feedback.bad  { color: #FF6B6B; }
+  #donation-bar a {
+    display: inline-flex; align-items: center; gap: 6px; text-decoration: none;
+    font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.75rem;
+    color: #a0845c; background: #fffbf0; border: 1.5px solid #ffe0a0;
+    border-radius: 50px; padding: 5px 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: all 0.15s;
+  }
+
+  /* ── Shared components ── */
+  .legend-row { display:flex; gap:12px; justify-content:center; }
+  .legend-pill { display:flex; align-items:center; justify-content:center; gap:8px;
+    border-radius:50px; padding:6px 0; font-weight:800; font-size:0.88rem;
+    width: 160px; }
+  .legend-pill.hour { background:#FFD6D6; color:#FF6B6B; }
+  .legend-pill.min  { background:#C8F5F3; color:#2aada4; }
+  .legend-dot { width:13px; height:13px; border-radius:50%; flex-shrink:0; }
+
+  .drag-hint { font-size:0.85rem; color:#aaa; font-weight:700; text-align:center; }
+
+  .digital-display {
+    display:flex; align-items:center; gap:6px;
+    background:white; border-radius:18px; padding:6px 20px;
+    box-shadow:0 4px 16px rgba(0,0,0,0.09);
+    font-size:1.9rem; font-weight:900;
+  }
+  .dh { color:#FF6B6B; } .dc { color:#ddd; } .dm { color:#4ECDC4; }
+
+  .words-bubble {
+    background:#FFD93D; border-radius:18px; padding:7px 18px;
+    font-weight:900; font-size:1.1rem; color:#5a4500;
+    box-shadow:0 4px 14px rgba(255,217,61,0.4); text-align:center;
+  }
+
+  .score-row { display:flex; justify-content:space-between; align-items:center;
+    width:100%; max-width:400px; font-weight:800; color:#aaa; font-size:1rem; }
+  .score-row .sh { color:#FF6B6B; }
+
+  .answers-grid { display:grid; grid-template-columns:1fr 1fr; gap:7px; width:100%; max-width:400px; }
+  .ans-btn {
+    font-family:'Nunito',sans-serif; font-weight:800; font-size:0.88rem;
+    background:white; border:2px solid #eee; color:#555;
+    border-radius:12px; height:40px; padding:0 6px; cursor:pointer; line-height:1.3; transition:background 0.1s, border-color 0.1s;
+  }
+  .ans-btn:hover:not(:disabled) { border-color:#4ECDC4; transform:scale(1.02); }
+  .ans-btn.correct { background:#E6FAF0; border-color:#6BCB77; color:#1a7a3f; }
+  .ans-btn.wrong   { background:#FFF0F0; border-color:#FF6B6B; color:#a33; }
+
+  .feedback { font-weight:900; font-size:1.1rem; text-align:center;
+    height:1.4rem; width:100%; max-width:400px; }
+  .feedback.good { color:#6BCB77; } .feedback.bad { color:#FF6B6B; }
 
   .target-box {
-    background: linear-gradient(135deg, #FFF3E0, #FFF9F0);
-    border: 2px dashed #FFD93D;
-    border-radius: 16px;
-    padding: 10px 18px;
-    font-weight: 800;
-    font-size: 1rem;
-    color: #7a5500;
-    text-align: center;
+    background:linear-gradient(135deg,#FFF3E0,#FFF9F0); border:2px dashed #FFD93D;
+    border-radius:14px; padding:8px 16px; font-weight:800; font-size:0.95rem;
+    color:#7a5500; text-align:center; width:100%; max-width:400px;
   }
-  .target-time { font-size: 1.3rem; font-weight: 900; }
-  .th { color: #FF6B6B; }
-  .tm { color: #4ECDC4; }
-  .tsep { color: #aaa; }
-  .target-words { font-size: 0.82rem; font-style: italic; }
+  .target-time { font-size:1.25rem; font-weight:900; }
+  .th { color:#FF6B6B; } .tm { color:#4ECDC4; } .tsep { color:#aaa; }
+  .target-words { font-size:0.8rem; font-style:italic; }
 
-  /* ── Buttons ── */
-  .btn {
-    font-family: 'Nunito', sans-serif;
-    font-weight: 900;
-    font-size: 1rem;
-    padding: 9px 28px;
-    border-radius: 50px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .btn:hover { transform: translateY(-1px); }
-  .btn-start  { background: linear-gradient(135deg,#6BCB77,#40B057); color:white; box-shadow:0 5px 16px rgba(107,203,119,0.4); font-size:1.1rem; padding:10px 32px; }
-  .btn-next   { background: linear-gradient(135deg,#A855F7,#C084FC); color:white; box-shadow:0 5px 14px rgba(168,85,247,0.35); }
-  .btn-check  { background: linear-gradient(135deg,#4ECDC4,#7EDDD8); color:white; box-shadow:0 5px 14px rgba(78,205,196,0.35); }
+  .btn { font-family:'Nunito',sans-serif; font-weight:900; font-size:1rem;
+    padding:9px 28px; border-radius:50px; border:none; cursor:pointer; transition:opacity 0.15s; }
+  .btn-start { background:linear-gradient(135deg,#6BCB77,#40B057); color:white; box-shadow:0 5px 16px rgba(107,203,119,0.4); font-size:1.1rem; padding:10px 32px; }
+  .btn-next  { background:linear-gradient(135deg,#A855F7,#C084FC); color:white; box-shadow:0 5px 14px rgba(168,85,247,0.35); }
+  .btn-check { background:linear-gradient(135deg,#4ECDC4,#7EDDD8); color:white; box-shadow:0 5px 14px rgba(78,205,196,0.35); }
 
-  .hidden { display: none !important; }
+  .hidden { display:none !important; }
 </style>
 </head>
 <body>
 
-<!-- Tab bar -->
+<!-- Row 1: Tab bar -->
 <div id="tabs">
   <button class="tab-btn active-explore" onclick="switchTab('explore')">🕹️ Explore</button>
   <button class="tab-btn" onclick="switchTab('quiz')">🎯 Quiz</button>
 </div>
 
-<div id="main">
+<!-- Row 2: Quiz subtabs — always occupies space, hidden in explore -->
+<div id="quiz-subtabs">
+  <button class="subtab-btn active" onclick="switchQuizMode('read')">📖 What time is it?</button>
+  <button class="subtab-btn" onclick="switchQuizMode('set')">🖐️ Set the hands!</button>
+</div>
 
-  <!-- EXPLORE SCREEN -->
-  <div id="screen-explore" class="screen active">
-    <div id="explore-inner">
-      <div class="legend-row">
-        <div class="legend-pill hour"><div class="legend-dot" style="background:#FF6B6B"></div>Hour hand</div>
-        <div class="legend-pill min"><div class="legend-dot" style="background:#4ECDC4"></div>Minute hand</div>
-      </div>
-      <div class="clock-wrap">
-        <svg id="explore-svg" viewBox="0 0 380 380" xmlns="http://www.w3.org/2000/svg"></svg>
-      </div>
-      <p class="drag-hint">👆 Drag the circles at the end of each hand!</p>
-      <div class="digital-display">
+<!-- Row 3: Top panel — fixed height, states swap via opacity -->
+<div id="top-panel">
+
+  <!-- EXPLORE top — pills + hint, flush to bottom of panel = right above clock -->
+  <div class="tp-state visible" id="tp-explore">
+    <div class="legend-row">
+      <div class="legend-pill hour"><div class="legend-dot" style="background:#FF6B6B"></div>Hour hand</div>
+      <div class="legend-pill min"><div class="legend-dot" style="background:#4ECDC4"></div>Minute hand</div>
+    </div>
+    <p class="drag-hint">👆 Drag the circles at the end of each hand!</p>
+  </div>
+
+  <!-- READ QUIZ top — label/question only, no score -->
+  <div class="tp-state" id="tp-read">
+    <div style="position:relative;width:100%;text-align:center;height:1.3rem;">
+      <p id="rq-label" style="position:absolute;inset:0;font-weight:800;color:#aaa;font-size:0.9rem;transition:opacity 0.2s;">I'll show a time — you pick the right answer!</p>
+      <p id="rq-question" style="position:absolute;inset:0;font-weight:900;color:#444;font-size:1rem;opacity:0;transition:opacity 0.2s;">⏰ What time is this?</p>
+    </div>
+  </div>
+
+  <!-- SET QUIZ top — label/target swapped via opacity, same fixed height -->
+  <div class="tp-state" id="tp-set">
+    <div style="position:relative;width:100%;max-width:400px;height:2.6rem;">
+      <p id="sq-label" style="position:absolute;inset:0;font-weight:800;color:#aaa;font-size:0.9rem;text-align:center;display:flex;align-items:center;justify-content:center;transition:opacity 0.15s;">I'll give a time — drag the hands to match!</p>
+      <div id="sq-target" class="target-box" style="position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity 0.15s;display:flex;align-items:center;justify-content:center;padding:4px 12px;"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Shared quiz score bar — always same position, hidden in explore -->
+<div id="quiz-score-bar">
+  <div id="score-read" class="score-slot">
+    <span style="font-weight:800;color:#aaa;font-size:0.95rem;">Score: <span class="sh" id="rq-score">0</span> / <span id="rq-total">0</span></span>
+    <span id="rq-stars">⭐</span>
+  </div>
+  <div id="score-set" class="score-slot" style="display:none;">
+    <span style="font-weight:800;color:#aaa;font-size:0.95rem;">Score: <span class="sh" id="sq-score">0</span> / <span id="sq-total">0</span></span>
+    <span id="sq-stars">⭐</span>
+  </div>
+</div>
+
+<!-- Row 3: THE ONE CLOCK — never moves -->
+<div id="clock-zone">
+  <div id="clock-filter-wrap">
+    <svg id="main-svg" viewBox="0 0 380 380" xmlns="http://www.w3.org/2000/svg"></svg>
+  </div>
+</div>
+
+<!-- Row 4: Bottom panel — fixed height, states swap via opacity -->
+<div id="bottom-panel">
+
+  <!-- EXPLORE bottom -->
+  <div class="bp-state visible" id="bp-explore">
+    <div id="time-display-wrap" style="display:flex;flex-direction:column;align-items:stretch;
+      box-shadow:0 4px 16px rgba(0,0,0,0.09);border-radius:18px;overflow:hidden;min-width:220px;
+      transition:filter 0.3s;">
+      <div class="digital-display" style="border-radius:0;box-shadow:none;justify-content:center;border-bottom:2px solid #f0f0f0;">
         <span class="dh" id="exp-h">12</span><span class="dc">:</span><span class="dm" id="exp-m">00</span>
       </div>
-      <div class="words-bubble" id="exp-words">🕐 Twelve o'clock!</div>
+      <div class="words-bubble" id="exp-words" style="border-radius:0;box-shadow:none;">🕐 Twelve o'clock!</div>
+    </div>
+    <button onclick="toggleTimeDisplay()" id="time-toggle"
+      style="font-family:'Nunito',sans-serif;font-weight:800;font-size:0.72rem;
+             background:white;border:1.5px solid #eee;border-radius:50px;
+             padding:3px 14px;color:#bbb;cursor:pointer;
+             box-shadow:0 2px 6px rgba(0,0,0,0.06);transition:all 0.2s;">
+      👁 Hide answer
+    </button>
+  </div>
+
+  <!-- READ QUIZ bottom: start state -->
+  <div class="bp-state" id="bp-read-start">
+    <button class="btn btn-start" onclick="startReadQuiz()">Start Quiz! 🚀</button>
+  </div>
+
+  <!-- READ QUIZ bottom: game state -->
+  <div class="bp-state" id="bp-read-game">
+    <div class="answers-grid" id="rq-answers" style="width:100%;max-width:400px;"></div>
+    <p class="feedback" id="rq-feedback" style="min-height:2.4rem;max-width:400px;width:100%;text-align:center;display:flex;align-items:center;justify-content:center;"></p>
+    <button class="btn btn-next" id="rq-next" onclick="nextReadQuestion()" style="visibility:hidden;flex-shrink:0;">Next ➡️</button>
+  </div>
+
+  <!-- SET QUIZ bottom: start state -->
+  <div class="bp-state" id="bp-set-start">
+    <button class="btn btn-start" onclick="startSetQuiz()">Start Quiz! 🚀</button>
+  </div>
+
+  <!-- SET QUIZ bottom: game state -->
+  <div class="bp-state" id="bp-set-game">
+    <p class="drag-hint" id="sq-drag-hint">👆 Drag the circles at the end of each hand!</p>
+    <div class="digital-display" style="border-radius:18px;">
+      <span class="dh" id="sq-h">12</span><span class="dc">:</span><span class="dm" id="sq-m">00</span>
+    </div>
+    <p class="feedback" id="sq-feedback" style="min-height:2.4rem;max-width:400px;width:100%;text-align:center;display:flex;align-items:center;justify-content:center;"></p>
+    <div style="position:relative;height:44px;width:100%;display:flex;align-items:center;justify-content:center;">
+      <button class="btn btn-check" id="sq-check" onclick="checkSetAnswer()" style="position:absolute;">Check! ✅</button>
+      <button class="btn btn-next" id="sq-next" onclick="nextSetQuestion()" style="position:absolute;visibility:hidden;">Next ➡️</button>
     </div>
   </div>
 
-  <!-- QUIZ SCREEN -->
-  <div id="screen-quiz" class="screen" style="justify-content:space-between; flex-direction:column;">
-    <div id="quiz-subtabs">
-      <button class="subtab-btn active" onclick="switchQuizMode('read')">📖 What time is it?</button>
-      <button class="subtab-btn" onclick="switchQuizMode('set')">🖐️ Set the hands!</button>
-    </div>
-
-    <!-- READ QUIZ -->
-    <div id="read-quiz" class="quiz-card">
-      <div class="score-row"><span>Score: <span class="sh" id="rq-score">0</span> / <span id="rq-total">0</span></span><span id="rq-stars">⭐</span></div>
-      <div id="rq-start-panel" style="text-align:center;padding:16px 0">
-        <p style="font-weight:800;color:#aaa;margin-bottom:12px">I'll show a time — you pick the right answer!</p>
-        <button class="btn btn-start" onclick="startReadQuiz()">Start Quiz! 🚀</button>
-      </div>
-      <div id="rq-game" class="hidden" style="display:flex;flex-direction:column;align-items:center;gap:8px;width:100%">
-        <div class="clock-wrap" style="max-width:320px">
-          <svg id="read-svg" viewBox="0 0 380 380" xmlns="http://www.w3.org/2000/svg"></svg>
-        </div>
-        <p class="quiz-question">⏰ What time is this?</p>
-        <div class="answers-grid" id="rq-answers"></div>
-        <p class="feedback hidden" id="rq-feedback"></p>
-        <button class="btn btn-next hidden" id="rq-next" onclick="nextReadQuestion()">Next ➡️</button>
-      </div>
-    </div>
-
-    <!-- SET QUIZ -->
-    <div id="set-quiz" class="quiz-card hidden">
-      <div class="score-row"><span>Score: <span class="sh" id="sq-score">0</span> / <span id="sq-total">0</span></span><span id="sq-stars">⭐</span></div>
-      <div id="sq-start-panel" style="text-align:center;padding:16px 0">
-        <p style="font-weight:800;color:#aaa;margin-bottom:12px">I'll give a time — drag the hands to match it!</p>
-        <button class="btn btn-start" onclick="startSetQuiz()">Start Quiz! 🚀</button>
-      </div>
-      <div id="sq-game" class="hidden" style="display:flex;flex-direction:column;align-items:center;gap:8px;width:100%">
-        <div id="sq-target" class="target-box"></div>
-        <div class="clock-wrap" style="max-width:380px">
-          <svg id="set-svg" viewBox="0 0 380 380" xmlns="http://www.w3.org/2000/svg"></svg>
-        </div>
-        <p class="drag-hint" id="sq-drag-hint">👆 Drag the circles at the end of each hand!</p>
-        <div class="digital-display">
-          <span class="dh" id="sq-h">12</span><span class="dc">:</span><span class="dm" id="sq-m">00</span>
-        </div>
-        <button class="btn btn-check" id="sq-check" onclick="checkSetAnswer()">Check my answer! ✅</button>
-        <p class="feedback hidden" id="sq-feedback"></p>
-        <button class="btn btn-next hidden" id="sq-next" onclick="nextSetQuestion()">Next ➡️</button>
-      </div>
-    </div>
-  </div>
+</div>
 
 
-</div><!-- /main -->
-
-<!-- Donation bar — fixed at bottom of viewport -->
+<!-- Row 6: Donation bar -->
 <div id="donation-bar">
   <a href="https://buymeacoffee.com/jiminyphysics" target="_blank" rel="noopener">
     ☕ Buy me a coffee to help fuel new apps
@@ -377,536 +368,419 @@
 </div>
 
 <script>
-// ═══════════════════════════════════════
-//  CONSTANTS & HELPERS
-// ═══════════════════════════════════════
-const CX = 190, CY = 190;
-const HOUR_COLOR = '#FF6B6B';
-const MIN_COLOR  = '#4ECDC4';
-const TICK_OUTER = 155;
-const MIN_RING_R = 175;
-const FACE_R     = 150;
-const NS = 'http://www.w3.org/2000/svg';
+const CX=190, CY=190, HOUR_COLOR='#FF6B6B', MIN_COLOR='#4ECDC4';
+const TICK_OUTER=155, MIN_RING_R=175, FACE_R=150, NS='http://www.w3.org/2000/svg';
 
-const NICE_TIMES = [
+const NICE_TIMES=[
   [12,0],[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0],[10,0],[11,0],
-  [12,15],[1,15],[2,15],[3,15],[6,15],[9,15],
-  [12,30],[1,30],[2,30],[3,30],[6,30],[9,30],
+  [12,15],[1,15],[2,15],[3,15],[6,15],[9,15],[12,30],[1,30],[2,30],[3,30],[6,30],[9,30],
   [12,45],[1,45],[2,45],[3,45],[6,45],[9,45],
   [3,5],[6,10],[9,20],[3,25],[6,35],[3,40],[9,50],[6,55],[1,20],[7,10],[4,35],
 ];
+const H_NAMES=['','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve'];
+const PRAISE=['🎉 Amazing!','⭐ Brilliant!','🌟 Perfect!','🥳 Superstar!','✨ Wow!'];
 
-const H_NAMES = ['','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve'];
-const PRAISE  = ['🎉 Amazing!','⭐ Brilliant!','🌟 Perfect!','🥳 Superstar!','✨ Wow!'];
-
-function randFrom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-
-function timeToWords(h, m) {
-  const nextH = (h%12)===11 ? 12 : (h%12)+1;
-  if (m===0)  return `${H_NAMES[h]} o'clock`;
-  if (m===15) return `quarter past ${H_NAMES[h]}`;
-  if (m===30) return `half past ${H_NAMES[h]}`;
-  if (m===45) return `quarter to ${H_NAMES[nextH]}`;
-  if (m<30)   return `${m} minutes past ${H_NAMES[h]}`;
+function randFrom(a){ return a[Math.floor(Math.random()*a.length)]; }
+function pad2(n){ return String(n).padStart(2,'0'); }
+function snapTo(a,s){ const st=(Math.PI*2)/s; return Math.round(a/st)*st; }
+function normAngle(a){ return ((a%(Math.PI*2))+Math.PI*2)%(Math.PI*2); }
+function angleToMins(a){ return Math.round(normAngle(a)/(Math.PI*2)*60)%60; }
+function angleToHrs(a){ let h=Math.round(normAngle(a)/(Math.PI*2)*12)%12; return h||12; }
+function getHandAngles(h,m){
+  return { minuteAngle:(m/60)*Math.PI*2, hourAngle:((h%12)/12)*Math.PI*2+(m/60)*(Math.PI*2/12) };
+}
+function endpoint(angle,len){ return { x:CX+Math.sin(angle)*len, y:CY-Math.cos(angle)*len }; }
+function svgEl(tag,attrs={}){
+  const el=document.createElementNS(NS,tag);
+  for(const[k,v] of Object.entries(attrs)) el.setAttribute(k,v);
+  return el;
+}
+function timeToWords(h,m){
+  const nextH=(h%12)===11?12:(h%12)+1;
+  if(m===0)  return `${H_NAMES[h]} o'clock`;
+  if(m===15) return `quarter past ${H_NAMES[h]}`;
+  if(m===30) return `half past ${H_NAMES[h]}`;
+  if(m===45) return `quarter to ${H_NAMES[nextH]}`;
+  if(m<30)   return `${m} minutes past ${H_NAMES[h]}`;
   return `${60-m} minutes to ${H_NAMES[nextH]}`;
 }
 
-function pad2(n){ return String(n).padStart(2,'0'); }
-
-function getHandAngles(h, m) {
-  const minuteAngle = (m/60)*Math.PI*2;
-  const hourAngle   = ((h%12)/12)*Math.PI*2 + (m/60)*(Math.PI*2/12);
-  return { hourAngle, minuteAngle };
-}
-
-function endpoint(angle, length) {
-  return { x: CX + Math.sin(angle)*length, y: CY - Math.cos(angle)*length };
-}
-
-function snapTo(angle, steps) {
-  const step = Math.PI*2/steps;
-  return Math.round(angle/step)*step;
-}
-
-function angleToMins(angle) {
-  let a = ((angle%(Math.PI*2))+Math.PI*2)%(Math.PI*2);
-  return Math.round(a/(Math.PI*2)*60)%60;
-}
-
-function angleToHrs(angle) {
-  let a = ((angle%(Math.PI*2))+Math.PI*2)%(Math.PI*2);
-  let h = Math.round(a/(Math.PI*2)*12)%12;
-  return h===0?12:h;
-}
-
-// ═══════════════════════════════════════
-//  SVG HELPERS
-// ═══════════════════════════════════════
-function svgEl(tag, attrs={}) {
-  const el = document.createElementNS(NS, tag);
-  for (const [k,v] of Object.entries(attrs)) el.setAttribute(k, v);
-  return el;
-}
-
-function buildClockBase(svg) {
-  // Outer teal ring bg
+// ── Build the clock face (numbers, ticks, rings) ──
+function buildClockFace(svg){
   svg.appendChild(svgEl('circle',{cx:CX,cy:CY,r:190,fill:'#F0FFFE'}));
   svg.appendChild(svgEl('circle',{cx:CX,cy:CY,r:162,fill:'white',stroke:'#C8F5F3','stroke-width':2}));
-  // Main face
   svg.appendChild(svgEl('circle',{cx:CX,cy:CY,r:FACE_R+5,fill:'white',stroke:'#F0E6FF','stroke-width':5}));
   svg.appendChild(svgEl('circle',{cx:CX,cy:CY,r:FACE_R,fill:'white',stroke:'#E8F0FF','stroke-width':1.5}));
-
-  // Tick marks
-  for (let i=0;i<60;i++) {
-    const ang = (i/60)*Math.PI*2 - Math.PI/2;
-    const isH = i%5===0;
-    const outerR = TICK_OUTER, innerR = isH ? TICK_OUTER-14 : TICK_OUTER-7;
+  for(let i=0;i<60;i++){
+    const ang=(i/60)*Math.PI*2-Math.PI/2, isH=i%5===0;
     svg.appendChild(svgEl('line',{
-      x1: CX+Math.cos(ang)*outerR, y1: CY+Math.sin(ang)*outerR,
-      x2: CX+Math.cos(ang)*innerR, y2: CY+Math.sin(ang)*innerR,
-      stroke: isH?'#ccc':'#e8e8e8', 'stroke-width': isH?2.5:1.2
+      x1:CX+Math.cos(ang)*TICK_OUTER, y1:CY+Math.sin(ang)*TICK_OUTER,
+      x2:CX+Math.cos(ang)*(isH?TICK_OUTER-14:TICK_OUTER-7), y2:CY+Math.sin(ang)*(isH?TICK_OUTER-14:TICK_OUTER-7),
+      stroke:isH?'#ccc':'#e8e8e8','stroke-width':isH?2.5:1.2
     }));
   }
-
-  // Outer minute ring numbers (0 instead of 60 at top)
-  for (let i=1;i<=12;i++) {
-    const minVal = (i*5)%60; // 60 becomes 0
-    const ang = (i*5/60)*Math.PI*2 - Math.PI/2;
-    const nx = CX+Math.cos(ang)*MIN_RING_R, ny = CY+Math.sin(ang)*MIN_RING_R;
-    const g = svgEl('g');
+  for(let i=1;i<=12;i++){
+    const minVal=(i*5)%60, ang=(i*5/60)*Math.PI*2-Math.PI/2;
+    const nx=CX+Math.cos(ang)*MIN_RING_R, ny=CY+Math.sin(ang)*MIN_RING_R;
+    const g=svgEl('g');
     g.appendChild(svgEl('circle',{cx:nx,cy:ny,r:16,fill:'#E0FFFE'}));
-    const t = svgEl('text',{x:nx,y:ny,'text-anchor':'middle','dominant-baseline':'central','font-size':13,'font-family':'Nunito, sans-serif','font-weight':900,fill:MIN_COLOR});
-    t.textContent = minVal;
-    g.appendChild(t);
-    svg.appendChild(g);
+    const t=svgEl('text',{x:nx,y:ny,'text-anchor':'middle','dominant-baseline':'central','font-size':13,'font-family':'Nunito,sans-serif','font-weight':900,fill:MIN_COLOR});
+    t.textContent=minVal; g.appendChild(t); svg.appendChild(g);
   }
-
-  // Hour numbers
-  for (let h=1;h<=12;h++) {
-    const ang = (h/12)*Math.PI*2 - Math.PI/2;
-    const nx = CX+Math.cos(ang)*118, ny = CY+Math.sin(ang)*118;
-    const g = svgEl('g');
+  for(let h=1;h<=12;h++){
+    const ang=(h/12)*Math.PI*2-Math.PI/2;
+    const nx=CX+Math.cos(ang)*118, ny=CY+Math.sin(ang)*118;
+    const g=svgEl('g');
     g.appendChild(svgEl('circle',{cx:nx,cy:ny,r:18,fill:'#FFF0F0'}));
-    const t = svgEl('text',{x:nx,y:ny,'text-anchor':'middle','dominant-baseline':'central','font-size':19,'font-family':'Nunito, sans-serif','font-weight':900,fill:HOUR_COLOR});
-    t.textContent = h;
-    g.appendChild(t);
-    svg.appendChild(g);
+    const t=svgEl('text',{x:nx,y:ny,'text-anchor':'middle','dominant-baseline':'central','font-size':19,'font-family':'Nunito,sans-serif','font-weight':900,fill:HOUR_COLOR});
+    t.textContent=h; g.appendChild(t); svg.appendChild(g);
   }
 }
 
-function createHandElements(svg, draggable, onHourDown, onMinDown) {
-  // Hour hand line
-  const hLine = svgEl('line',{x1:CX,y1:CY,x2:CX,y2:CX,stroke:HOUR_COLOR,'stroke-width':12,'stroke-linecap':'round'});
-  svg.appendChild(hLine);
-  // Minute hand line
-  const mLine = svgEl('line',{x1:CX,y1:CY,x2:CX,y2:CX,stroke:MIN_COLOR,'stroke-width':7,'stroke-linecap':'round'});
-  svg.appendChild(mLine);
-  // Centre dot
-  svg.appendChild(svgEl('circle',{cx:CX,cy:CY,r:11,fill:'#444'}));
-  svg.appendChild(svgEl('circle',{cx:CX,cy:CY,r:5.5,fill:'white'}));
-  // Hour grab circle
-  const hCirc = svgEl('circle',{cx:CX,cy:90,r:17,fill:HOUR_COLOR,stroke:'white','stroke-width':3});
-  if (draggable) { hCirc.style.cursor='grab'; hCirc.addEventListener('mousedown',onHourDown); hCirc.addEventListener('touchstart',onHourDown,{passive:true}); }
-  svg.appendChild(hCirc);
-  // Minute grab circle
-  const mCirc = svgEl('circle',{cx:CX,cy:70,r:14,fill:MIN_COLOR,stroke:'white','stroke-width':3});
-  if (draggable) { mCirc.style.cursor='grab'; mCirc.addEventListener('mousedown',onMinDown); mCirc.addEventListener('touchstart',onMinDown,{passive:true}); }
-  svg.appendChild(mCirc);
-
-  return { hLine, mLine, hCirc, mCirc };
-}
-
-function updateHands(hLine, mLine, hCirc, mCirc, hourAngle, minuteAngle) {
-  const hp = endpoint(hourAngle, 78);
-  const mp = endpoint(minuteAngle, 112);
-  hLine.setAttribute('x2', hp.x); hLine.setAttribute('y2', hp.y);
-  mLine.setAttribute('x2', mp.x); mLine.setAttribute('y2', mp.y);
-  hCirc.setAttribute('cx', hp.x); hCirc.setAttribute('cy', hp.y);
-  mCirc.setAttribute('cx', mp.x); mCirc.setAttribute('cy', mp.y);
-}
-
-function makeDraggable(svg, onHourAngle, onMinAngle) {
-  let dragging = null;
-
-  function getAngle(clientX, clientY) {
-    const rect = svg.getBoundingClientRect();
-    const scale = 380 / rect.width;
-    return Math.atan2((clientX-rect.left)*scale - CX, -((clientY-rect.top)*scale - CY));
-  }
-
-  const onDown = (hand) => (e) => {
-    e.preventDefault();
-    dragging = hand;
-  };
-
-  const onMove = (e) => {
-    if (!dragging) return;
-    const touch = e.touches?.[0] ?? e;
-    const angle = getAngle(touch.clientX, touch.clientY);
-    if (dragging==='hour') onHourAngle(angle);
-    else onMinAngle(angle);
-  };
-
-  const onUp = () => { dragging = null; };
-
-  svg.addEventListener('touchmove', (e)=>{
-    if (!dragging) return;
-    e.preventDefault();
-    const t = e.touches[0];
-    const angle = getAngle(t.clientX, t.clientY);
-    if (dragging==='hour') onHourAngle(angle);
-    else onMinAngle(angle);
-  }, {passive:false});
-
-  svg.addEventListener('touchend', onUp);
-  window.addEventListener('mousemove', onMove);
-  window.addEventListener('mouseup', onUp);
-  svg.addEventListener('mousedown', e => e.preventDefault());
-
-  return {
-    hourDown: onDown('hour'),
-    minDown:  onDown('minute'),
-  };
+// ── Update hand positions ──
+function updateHands(hLine,mLine,hCirc,mCirc,hourAngle,minuteAngle){
+  const hp=endpoint(hourAngle,78), mp=endpoint(minuteAngle,112);
+  hLine.setAttribute('x2',hp.x); hLine.setAttribute('y2',hp.y);
+  mLine.setAttribute('x2',mp.x); mLine.setAttribute('y2',mp.y);
+  hCirc.setAttribute('cx',hp.x); hCirc.setAttribute('cy',hp.y);
+  mCirc.setAttribute('cx',mp.x); mCirc.setAttribute('cy',mp.y);
 }
 
 // ═══════════════════════════════════════
-//  TAB SWITCHING
+//  THE ONE CLOCK
 // ═══════════════════════════════════════
-let currentTab = 'explore';
-function switchTab(tab) {
-  currentTab = tab;
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-'+tab).classList.add('active');
-  document.querySelectorAll('.tab-btn').forEach(b => { b.className='tab-btn'; });
-  const btn = document.querySelector(`#tabs .tab-btn:${tab==='explore'?'first':'last'}-child`);
-  btn.classList.add(tab==='explore'?'active-explore':'active-quiz');
+const mainSvg = document.getElementById('main-svg');
+buildClockFace(mainSvg);
+
+// Hands
+const hLine = svgEl('line',{x1:CX,y1:CY,x2:CX,y2:CY,stroke:HOUR_COLOR,'stroke-width':12,'stroke-linecap':'round'});
+const mLine = svgEl('line',{x1:CX,y1:CY,x2:CX,y2:CY,stroke:MIN_COLOR,'stroke-width':7,'stroke-linecap':'round'});
+mainSvg.appendChild(hLine);
+mainSvg.appendChild(mLine);
+mainSvg.appendChild(svgEl('circle',{cx:CX,cy:CY,r:11,fill:'#444'}));
+mainSvg.appendChild(svgEl('circle',{cx:CX,cy:CY,r:5.5,fill:'white'}));
+const hCirc = svgEl('circle',{cx:CX,cy:90,r:17,fill:HOUR_COLOR,stroke:'white','stroke-width':3});
+const mCirc = svgEl('circle',{cx:CX,cy:70,r:14,fill:MIN_COLOR,stroke:'white','stroke-width':3});
+mainSvg.appendChild(hCirc);
+mainSvg.appendChild(mCirc);
+
+// ── Mode tracking ──
+// 'explore' | 'read-start' | 'read-game' | 'set-start' | 'set-game'
+let clockMode = 'explore';
+
+function setMode(mode){
+  clockMode = mode;
+  // Draggable in explore and set-game only
+  const draggable = mode==='explore' || mode==='set-game';
+  hCirc.style.cursor = draggable?'grab':'default';
+  mCirc.style.cursor = draggable?'grab':'default';
+  // Blur clock in read-start
+  document.getElementById('clock-filter-wrap').style.filter =
+    mode==='read-start'
+      ? 'drop-shadow(0 8px 24px rgba(0,0,0,0.1)) blur(6px)'
+      : 'drop-shadow(0 8px 24px rgba(0,0,0,0.13))';
 }
 
-let currentQuizMode = 'read';
-function switchQuizMode(mode) {
-  currentQuizMode = mode;
-  document.querySelectorAll('.subtab-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-  document.getElementById('read-quiz').classList.toggle('hidden', mode!=='read');
-  document.getElementById('set-quiz').classList.toggle('hidden', mode!=='set');
+// ── Drag system (single, mode-aware) ──
+let dragging=null, prevMinAngle=null;
+// explore state
+let expTotalMins=0;
+// set quiz state
+let sqTotalMins=0, sqPrevMinAngle=null, sqDragging=null;
+
+function getClockAngle(clientX,clientY){
+  const rect=mainSvg.getBoundingClientRect(), scale=380/rect.width;
+  return Math.atan2((clientX-rect.left)*scale-CX, -((clientY-rect.top)*scale-CY));
 }
 
-// ═══════════════════════════════════════
-//  EXPLORE CLOCK
-// ═══════════════════════════════════════
-(function initExplore() {
-  const svg = document.getElementById('explore-svg');
-  buildClockBase(svg);
+hCirc.addEventListener('mousedown',(e)=>{ if(clockMode!=='explore'&&clockMode!=='set-game')return; e.preventDefault(); dragging='hour'; prevMinAngle=null; sqPrevMinAngle=null; });
+mCirc.addEventListener('mousedown',(e)=>{ if(clockMode!=='explore'&&clockMode!=='set-game')return; e.preventDefault(); dragging='minute'; prevMinAngle=null; sqPrevMinAngle=null; });
+hCirc.addEventListener('touchstart',()=>{ if(clockMode!=='explore'&&clockMode!=='set-game')return; dragging='hour'; prevMinAngle=null; sqPrevMinAngle=null; },{passive:true});
+mCirc.addEventListener('touchstart',()=>{ if(clockMode!=='explore'&&clockMode!=='set-game')return; dragging='minute'; prevMinAngle=null; sqPrevMinAngle=null; },{passive:true});
 
-  // Time stored as continuous total minutes so winding the minute hand carries the hour
-  let totalMins = 0; // represents 12:00
-  let dragging = null;   // 'hour' | 'minute' | null
-  let prevMinAngle = null;
+mainSvg.addEventListener('mousedown',e=>e.preventDefault());
+mainSvg.addEventListener('touchmove',(e)=>{
+  if(!dragging)return; e.preventDefault();
+  handleDragMove(e.touches[0].clientX, e.touches[0].clientY);
+},{passive:false});
+window.addEventListener('mousemove',(e)=>{ if(dragging) handleDragMove(e.clientX,e.clientY); });
+window.addEventListener('mouseup',  ()=>{ dragging=null; prevMinAngle=null; sqPrevMinAngle=null; });
+window.addEventListener('touchend', ()=>{ dragging=null; prevMinAngle=null; sqPrevMinAngle=null; });
 
-  // Build hand elements directly — no external drag handlers needed
-  const hLine = svgEl('line',{x1:CX,y1:CY,x2:CX,y2:CY,stroke:HOUR_COLOR,'stroke-width':12,'stroke-linecap':'round'});
-  const mLine = svgEl('line',{x1:CX,y1:CY,x2:CX,y2:CY,stroke:MIN_COLOR,'stroke-width':7,'stroke-linecap':'round'});
-  svg.appendChild(hLine);
-  svg.appendChild(mLine);
-  svg.appendChild(svgEl('circle',{cx:CX,cy:CY,r:11,fill:'#444'}));
-  svg.appendChild(svgEl('circle',{cx:CX,cy:CY,r:5.5,fill:'white'}));
-  const hCirc = svgEl('circle',{cx:CX,cy:90,r:17,fill:HOUR_COLOR,stroke:'white','stroke-width':3});
-  const mCirc = svgEl('circle',{cx:CX,cy:70,r:14,fill:MIN_COLOR,stroke:'white','stroke-width':3});
-  hCirc.style.cursor = 'grab';
-  mCirc.style.cursor = 'grab';
-  svg.appendChild(hCirc);
-  svg.appendChild(mCirc);
-
-  function getAngle(clientX, clientY) {
-    const rect = svg.getBoundingClientRect();
-    const scale = 380 / rect.width;
-    return Math.atan2((clientX - rect.left) * scale - CX, -((clientY - rect.top) * scale - CY));
-  }
-
-  function normalise(angle) {
-    return ((angle % (Math.PI*2)) + Math.PI*2) % (Math.PI*2);
-  }
-
-  function getHM() {
-    const m = ((totalMins % 60) + 60) % 60;
-    const h = ((Math.floor(((totalMins % 720) + 720) % 720 / 60)) % 12) || 12;
-    return { h, m };
-  }
-
-  // ── Pointer down on each grab circle ──
-  hCirc.addEventListener('mousedown',  (e) => { e.preventDefault(); dragging='hour';   prevMinAngle=null; });
-  mCirc.addEventListener('mousedown',  (e) => { e.preventDefault(); dragging='minute'; prevMinAngle=null; });
-  hCirc.addEventListener('touchstart', (e) => { dragging='hour';   prevMinAngle=null; }, {passive:true});
-  mCirc.addEventListener('touchstart', (e) => { dragging='minute'; prevMinAngle=null; }, {passive:true});
-
-  // ── Move ──
-  function onMove(clientX, clientY) {
-    if (!dragging) return;
-    const angle = getAngle(clientX, clientY);
-
-    if (dragging === 'hour') {
-      // Snap hour, preserve minutes
-      const { m } = getHM();
-      const newH = angleToHrs(snapTo(angle, 12));
-      totalMins = (newH % 12) * 60 + m;
-      prevMinAngle = null;
-
+function handleDragMove(cx,cy){
+  if(!dragging) return;
+  const angle = getClockAngle(cx,cy);
+  if(clockMode==='explore'){
+    if(dragging==='hour'){
+      const m=((expTotalMins%60)+60)%60;
+      expTotalMins=(angleToHrs(snapTo(angle,12))%12)*60+m;
+      prevMinAngle=null;
     } else {
-      // Continuous winding: delta angle → delta minutes → carries into hours
-      const norm = normalise(angle);
-      if (prevMinAngle !== null) {
-        let diff = norm - prevMinAngle;
-        if (diff >  Math.PI) diff -= Math.PI*2;
-        if (diff < -Math.PI) diff += Math.PI*2;
-        totalMins += diff / (Math.PI*2) * 60;
-        // Allow full 12-hour range, no hard clamp
+      const n=normAngle(angle);
+      if(prevMinAngle!==null){
+        let d=n-prevMinAngle;
+        if(d>Math.PI)d-=Math.PI*2; if(d<-Math.PI)d+=Math.PI*2;
+        expTotalMins+=d/(Math.PI*2)*60;
       }
-      prevMinAngle = norm;
+      prevMinAngle=n;
     }
-    render();
+    renderExplore();
+  } else if(clockMode==='set-game'){
+    if(dragging==='hour'){
+      const m=((sqTotalMins%60)+60)%60;
+      sqTotalMins=(angleToHrs(snapTo(angle,12))%12)*60+m;
+      sqPrevMinAngle=null;
+    } else {
+      const n=normAngle(angle);
+      if(sqPrevMinAngle!==null){
+        let d=n-sqPrevMinAngle;
+        if(d>Math.PI)d-=Math.PI*2; if(d<-Math.PI)d+=Math.PI*2;
+        sqTotalMins+=d/(Math.PI*2)*60;
+      }
+      sqPrevMinAngle=n;
+    }
+    renderSetClock();
   }
+}
 
-  svg.addEventListener('touchmove', (e) => {
-    e.preventDefault();
-    if (!dragging) return;
-    onMove(e.touches[0].clientX, e.touches[0].clientY);
-  }, {passive:false});
+// ── Explore render ──
+function getExpHM(){
+  const m=((expTotalMins%60)+60)%60;
+  const h=((Math.floor(((expTotalMins%720)+720)%720/60))%12)||12;
+  return{h,m};
+}
+function renderExplore(){
+  const{h,m}=getExpHM();
+  const exact=((expTotalMins%60)+60)%60;
+  const mA=(exact/60)*Math.PI*2;
+  const hA=((h%12)/12)*Math.PI*2+(exact/60)*(Math.PI*2/12);
+  updateHands(hLine,mLine,hCirc,mCirc,hA,mA);
+  const dispM=Math.floor(exact);
+  document.getElementById('exp-h').textContent=pad2(h);
+  document.getElementById('exp-m').textContent=pad2(dispM);
+  const w=timeToWords(h,dispM);
+  document.getElementById('exp-words').textContent='🕐 '+w.charAt(0).toUpperCase()+w.slice(1)+'!';
+}
 
-  window.addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY));
-  window.addEventListener('mouseup',   () => { dragging=null; prevMinAngle=null; });
-  window.addEventListener('touchend',  () => { dragging=null; prevMinAngle=null; });
-  svg.addEventListener('mousedown', e => e.preventDefault());
+// ── Set quiz render ──
+function getSqHM(){
+  const exact=((sqTotalMins%60)+60)%60;
+  return{ h:((Math.floor(((sqTotalMins%720)+720)%720/60))%12)||12, m:Math.floor(exact), exact };
+}
+function renderSetClock(){
+  const{h,m,exact}=getSqHM();
+  const mA=(exact/60)*Math.PI*2;
+  const hA=((h%12)/12)*Math.PI*2+(exact/60)*(Math.PI*2/12);
+  updateHands(hLine,mLine,hCirc,mCirc,hA,mA);
+  document.getElementById('sq-h').textContent=pad2(h);
+  document.getElementById('sq-m').textContent=pad2(m);
+}
 
-  function render() {
-    const { h, m } = getHM();
-    const exactMins = ((totalMins % 60) + 60) % 60;
-    const minuteAngle = (exactMins / 60) * Math.PI*2;
-    const hourAngle   = ((h % 12) / 12) * Math.PI*2 + (exactMins / 60) * (Math.PI*2/12);
-    updateHands(hLine, mLine, hCirc, mCirc, hourAngle, minuteAngle);
-    const dispM = Math.floor(exactMins);  // floor prevents ever showing 60
-    document.getElementById('exp-h').textContent = pad2(h);
-    document.getElementById('exp-m').textContent = pad2(dispM);
-    const w = timeToWords(h, dispM);
-    document.getElementById('exp-words').textContent = '🕐 ' + w.charAt(0).toUpperCase() + w.slice(1) + '!';
+// ── Position for read quiz (static, just update hands) ──
+function renderReadClock(h,m){
+  const{hourAngle,minuteAngle}=getHandAngles(h,m);
+  updateHands(hLine,mLine,hCirc,mCirc,hourAngle,minuteAngle);
+}
+
+// Initial explore render
+setMode('explore');
+renderExplore();
+
+// ═══════════════════════════════════════
+//  PANEL SWITCHING HELPERS
+// ═══════════════════════════════════════
+function showPanel(panelId){
+  // top panels — game states share the same top panel as their quiz mode
+  const tpMap = {
+    'explore':    'explore',
+    'read-start': 'read',
+    'read-game':  'read',
+    'set-start':  'set',
+    'set-game':   'set',
+  };
+  document.querySelectorAll('.tp-state').forEach(el=>el.classList.remove('visible'));
+  document.querySelectorAll('.bp-state').forEach(el=>el.classList.remove('visible'));
+  const tpId = tpMap[panelId] || panelId;
+  const tp = document.getElementById('tp-'+tpId);
+  const bp = document.getElementById('bp-'+panelId);
+  if(tp) tp.classList.add('visible');
+  if(bp) bp.classList.add('visible');
+}
+
+// ═══════════════════════════════════════
+//  TAB & MODE SWITCHING
+// ═══════════════════════════════════════
+let currentTab='explore', currentQuizMode='read';
+
+function switchTab(tab){
+  currentTab=tab;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.className='tab-btn');
+  const btn=document.querySelector('#tabs .tab-btn:'+(tab==='explore'?'first':'last')+'-child');
+  btn.classList.add(tab==='explore'?'active-explore':'active-quiz');
+  if(tab==='explore'){
+    showPanel('explore');
+    document.getElementById('quiz-subtabs').classList.remove('visible');
+    document.getElementById('quiz-score-bar').classList.remove('visible');
+    setMode('explore');
+    renderExplore();
+  } else {
+    document.getElementById('quiz-subtabs').classList.add('visible');
+    document.getElementById('quiz-score-bar').classList.add('visible');
+    applyQuizMode(currentQuizMode);
   }
+}
 
-  render();
-})();
+function switchQuizMode(mode){
+  currentQuizMode=mode;
+  document.querySelectorAll('.subtab-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  applyQuizMode(mode);
+}
+
+function applyQuizMode(mode){
+  // Swap which score slot is visible
+  document.getElementById('score-read').style.display = mode==='read' ? 'flex' : 'none';
+  document.getElementById('score-set').style.display  = mode==='set'  ? 'flex' : 'none';
+  if(mode==='read'){
+    const started=document.getElementById('bp-read-game').classList.contains('visible');
+    showPanel(started?'read-game':'read-start');
+    if(started){
+      setMode('read-game');
+    } else {
+      setMode('read-start');
+      renderReadClock(10,10);
+    }
+  } else {
+    const started=document.getElementById('bp-set-game').classList.contains('visible');
+    showPanel(started?'set-game':'set-start');
+    setMode(started?'set-game':'set-start');
+    if(started) renderSetClock();
+  }
+}
+
+// ═══════════════════════════════════════
+//  EXPLORE TOGGLE
+// ═══════════════════════════════════════
+let timeDisplayVisible=true;
+function toggleTimeDisplay(){
+  timeDisplayVisible=!timeDisplayVisible;
+  const wrap=document.getElementById('time-display-wrap');
+  const btn=document.getElementById('time-toggle');
+  wrap.style.filter=timeDisplayVisible?'none':'blur(8px)';
+  btn.textContent=timeDisplayVisible?'👁 Hide answer':'👁 Show answer';
+  btn.style.color=timeDisplayVisible?'#bbb':'#FF6B6B';
+  btn.style.borderColor=timeDisplayVisible?'#eee':'#FFD6D6';
+}
 
 // ═══════════════════════════════════════
 //  READ QUIZ
 // ═══════════════════════════════════════
 let rqScore=0, rqTotal=0, rqAnswered=false, rqTarget=null;
 
-(function initReadQuiz() {
-  const svg = document.getElementById('read-svg');
-  buildClockBase(svg);
-  window._rqHands = createHandElements(svg, false);
-})();
-
-function startReadQuiz() {
-  document.getElementById('rq-start-panel').classList.add('hidden');
-  document.getElementById('rq-game').classList.remove('hidden');
-  document.getElementById('rq-game').style.display = 'flex';
+function startReadQuiz(){
+  document.getElementById('rq-label').style.opacity='0';
+  document.getElementById('rq-question').style.opacity='1';
+  showPanel('read-game');
+  setMode('read-game');
   nextReadQuestion();
 }
 
-function nextReadQuestion() {
-  rqAnswered = false;
-  document.getElementById('rq-feedback').classList.add('hidden');
-  document.getElementById('rq-next').classList.add('hidden');
+function nextReadQuestion(){
+  rqAnswered=false;
+  document.getElementById('rq-feedback').textContent='';
+  document.getElementById('rq-feedback').className='feedback'; document.getElementById('rq-feedback').textContent='';
+  document.getElementById('rq-next').style.visibility='hidden';
 
-  const [h,m] = randFrom(NICE_TIMES);
-  rqTarget = {h,m};
+  const[h,m]=randFrom(NICE_TIMES);
+  rqTarget={h,m};
+  renderReadClock(h,m);
 
-  const { hourAngle, minuteAngle } = getHandAngles(h, m);
-  const {hLine,mLine,hCirc,mCirc} = window._rqHands;
-  updateHands(hLine,mLine,hCirc,mCirc,hourAngle,minuteAngle);
-
-  const correct = timeToWords(h,m);
+  const correct=timeToWords(h,m);
   const wrongs=[]; const used=new Set([`${h}:${m}`]);
-  while(wrongs.length<3){ const[wh,wm]=randFrom(NICE_TIMES); const k=`${wh}:${wm}`; if(used.has(k))continue; used.add(k); wrongs.push({h:wh,m:wm,text:timeToWords(wh,wm),isCorrect:false}); }
+  while(wrongs.length<3){const[wh,wm]=randFrom(NICE_TIMES);const k=`${wh}:${wm}`;if(used.has(k))continue;used.add(k);wrongs.push({h:wh,m:wm,text:timeToWords(wh,wm),isCorrect:false});}
   const all=[{h,m,text:correct,isCorrect:true},...wrongs].sort(()=>Math.random()-0.5);
-
-  const grid = document.getElementById('rq-answers');
+  const grid=document.getElementById('rq-answers');
   grid.innerHTML='';
-  all.forEach(ans => {
-    const btn = document.createElement('button');
+  all.forEach(ans=>{
+    const btn=document.createElement('button');
     btn.className='ans-btn';
-    btn.textContent = ans.text.charAt(0).toUpperCase()+ans.text.slice(1);
-    btn.onclick = () => pickReadAnswer(ans, btn, all, grid);
+    btn.textContent=ans.text.charAt(0).toUpperCase()+ans.text.slice(1);
+    btn.onclick=()=>pickReadAnswer(ans,btn,all,grid);
     grid.appendChild(btn);
   });
 }
 
-function pickReadAnswer(ans, btn, all, grid) {
-  if (rqAnswered) return;
+function pickReadAnswer(ans,btn,all,grid){
+  if(rqAnswered)return;
   rqAnswered=true; rqTotal++;
-
-  if (ans.isCorrect) {
-    rqScore++;
-    btn.classList.add('correct');
-    showFeedback('rq-feedback', randFrom(PRAISE), true);
-  } else {
-    btn.classList.add('wrong');
-    grid.querySelectorAll('.ans-btn').forEach((b,i) => { if(all[i].isCorrect) b.classList.add('correct'); });
-    showFeedback('rq-feedback', "😊 Not quite — correct answer highlighted!", false);
-  }
-  updateScore('rq', rqScore, rqTotal);
-  document.getElementById('rq-next').classList.remove('hidden');
-  grid.querySelectorAll('.ans-btn').forEach(b => b.disabled=true);
+  if(ans.isCorrect){ rqScore++; btn.classList.add('correct'); showFeedback('rq-feedback',randFrom(PRAISE),true); }
+  else{ btn.classList.add('wrong'); grid.querySelectorAll('.ans-btn').forEach((b,i)=>{if(all[i].isCorrect)b.classList.add('correct');}); showFeedback('rq-feedback',"😊 Not quite — correct answer highlighted!",false); }
+  updateScore('rq',rqScore,rqTotal);
+  document.getElementById('rq-next').style.visibility='visible';
+  grid.querySelectorAll('.ans-btn').forEach(b=>b.disabled=true);
 }
 
 // ═══════════════════════════════════════
 //  SET QUIZ
 // ═══════════════════════════════════════
 let sqScore=0, sqTotal=0, sqTarget=null, sqSubmitted=false;
-let sqTotalMins=0, sqPrevMinAngle=null, sqDragging=null;
-let _sqHands=null;
 
-(function initSetQuiz() {
-  const svg = document.getElementById('set-svg');
-  buildClockBase(svg);
-
-  const hLine = svgEl('line',{x1:CX,y1:CY,x2:CX,y2:CY,stroke:HOUR_COLOR,'stroke-width':12,'stroke-linecap':'round'});
-  const mLine = svgEl('line',{x1:CX,y1:CY,x2:CX,y2:CY,stroke:MIN_COLOR,'stroke-width':7,'stroke-linecap':'round'});
-  svg.appendChild(hLine);
-  svg.appendChild(mLine);
-  svg.appendChild(svgEl('circle',{cx:CX,cy:CY,r:11,fill:'#444'}));
-  svg.appendChild(svgEl('circle',{cx:CX,cy:CY,r:5.5,fill:'white'}));
-  const hCirc = svgEl('circle',{cx:CX,cy:90,r:17,fill:HOUR_COLOR,stroke:'white','stroke-width':3});
-  const mCirc = svgEl('circle',{cx:CX,cy:70,r:14,fill:MIN_COLOR,stroke:'white','stroke-width':3});
-  hCirc.style.cursor='grab'; mCirc.style.cursor='grab';
-  svg.appendChild(hCirc); svg.appendChild(mCirc);
-  _sqHands = { hLine, mLine, hCirc, mCirc };
-
-  function getAngle(clientX, clientY) {
-    const rect = svg.getBoundingClientRect();
-    const scale = 380 / rect.width;
-    return Math.atan2((clientX-rect.left)*scale - CX, -((clientY-rect.top)*scale - CY));
-  }
-
-  function normAngle(a) { return ((a%(Math.PI*2))+Math.PI*2)%(Math.PI*2); }
-
-  hCirc.addEventListener('mousedown',  (e)=>{ if(sqSubmitted)return; e.preventDefault(); sqDragging='hour';   sqPrevMinAngle=null; });
-  mCirc.addEventListener('mousedown',  (e)=>{ if(sqSubmitted)return; e.preventDefault(); sqDragging='minute'; sqPrevMinAngle=null; });
-  hCirc.addEventListener('touchstart', ()=>{ if(sqSubmitted)return; sqDragging='hour';   sqPrevMinAngle=null; },{passive:true});
-  mCirc.addEventListener('touchstart', ()=>{ if(sqSubmitted)return; sqDragging='minute'; sqPrevMinAngle=null; },{passive:true});
-
-  function onMove(clientX, clientY) {
-    if (!sqDragging || sqSubmitted) return;
-    const angle = getAngle(clientX, clientY);
-    if (sqDragging==='hour') {
-      const m = ((sqTotalMins%60)+60)%60;
-      const newH = angleToHrs(snapTo(angle,12));
-      sqTotalMins = (newH%12)*60 + m;
-      sqPrevMinAngle = null;
-    } else {
-      const n = normAngle(angle);
-      if (sqPrevMinAngle !== null) {
-        let diff = n - sqPrevMinAngle;
-        if (diff >  Math.PI) diff -= Math.PI*2;
-        if (diff < -Math.PI) diff += Math.PI*2;
-        sqTotalMins += diff/(Math.PI*2)*60;
-      }
-      sqPrevMinAngle = n;
-    }
-    renderSetClock();
-  }
-
-  svg.addEventListener('touchmove',(e)=>{ e.preventDefault(); if(!sqDragging)return; onMove(e.touches[0].clientX,e.touches[0].clientY); },{passive:false});
-  window.addEventListener('mousemove',(e)=>onMove(e.clientX,e.clientY));
-  window.addEventListener('mouseup', ()=>{ sqDragging=null; sqPrevMinAngle=null; });
-  window.addEventListener('touchend',()=>{ sqDragging=null; sqPrevMinAngle=null; });
-  svg.addEventListener('mousedown',e=>e.preventDefault());
-
-  renderSetClock();
-})();
-
-function sqGetHM() {
-  const exactMins = ((sqTotalMins%60)+60)%60;
-  const m = Math.floor(exactMins);
-  const h = ((Math.floor(((sqTotalMins%720)+720)%720/60))%12)||12;
-  return { h, m };
-}
-
-function renderSetClock() {
-  const { h, m } = sqGetHM();
-  const exactMins = ((sqTotalMins%60)+60)%60;
-  const minuteAngle = (exactMins/60)*Math.PI*2;
-  const hourAngle   = ((h%12)/12)*Math.PI*2 + (exactMins/60)*(Math.PI*2/12);
-  const {hLine,mLine,hCirc,mCirc} = _sqHands;
-  updateHands(hLine,mLine,hCirc,mCirc,hourAngle,minuteAngle);
-  document.getElementById('sq-h').textContent = pad2(h);
-  document.getElementById('sq-m').textContent = pad2(Math.floor(exactMins));
-}
-
-function startSetQuiz() {
-  document.getElementById('sq-start-panel').classList.add('hidden');
-  document.getElementById('sq-game').classList.remove('hidden');
-  document.getElementById('sq-game').style.display='flex';
+function startSetQuiz(){
+  document.getElementById('sq-label').style.opacity='0'; document.getElementById('sq-label').style.pointerEvents='none';
+  document.getElementById('sq-target').style.opacity='1'; document.getElementById('sq-target').style.pointerEvents='auto';
+  showPanel('set-game');
+  setMode('set-game');
   nextSetQuestion();
 }
 
-function nextSetQuestion() {
-  sqSubmitted=false;
-  sqTotalMins=0; sqPrevMinAngle=null; // reset to 12:00
-  document.getElementById('sq-feedback').classList.add('hidden');
-  document.getElementById('sq-next').classList.add('hidden');
-  document.getElementById('sq-check').classList.remove('hidden');
-  document.getElementById('sq-drag-hint').classList.remove('hidden');
-
-  const [h,m] = randFrom(NICE_TIMES);
-  sqTarget={h,m};
-
-  const th = h%12||12;
-  document.getElementById('sq-target').innerHTML =
-    `🖐️ Move the hands to show: <span class="target-time"><span class="th">${pad2(th)}</span><span class="tsep">:</span><span class="tm">${pad2(m)}</span></span><br><span class="target-words">(${timeToWords(th,m)})</span>`;
-
+function nextSetQuestion(){
+  sqSubmitted=false; sqTotalMins=0; sqPrevMinAngle=null;
+  document.getElementById('sq-feedback').textContent='';
+  document.getElementById('sq-feedback').className='feedback'; document.getElementById('sq-feedback').textContent='';
+  document.getElementById('sq-next').style.visibility='hidden';
+  document.getElementById('sq-check').style.visibility='visible';
+  document.getElementById('sq-drag-hint').style.visibility='visible';
+  const[h,m]=randFrom(NICE_TIMES); sqTarget={h,m};
+  const th=h%12||12;
+  document.getElementById('sq-target').innerHTML=
+    `🖐️ Show: <span class="target-time"><span class="th">${pad2(th)}</span><span class="tsep">:</span><span class="tm">${pad2(m)}</span></span> <span class="target-words">(${timeToWords(th,m)})</span>`;
   renderSetClock();
 }
 
-function checkSetAnswer() {
+function checkSetAnswer(){
+  if(sqSubmitted)return;
   sqSubmitted=true; sqTotal++;
-  const th = sqTarget.h%12||12;
-  const { h, m } = sqGetHM();
-  const roundM = Math.round(m)%60;
-  const correct = h===th && roundM===sqTarget.m;
-
-  if (correct) {
-    sqScore++;
-    showFeedback('sq-feedback', randFrom(PRAISE), true);
-  } else {
-    // Snap clock to correct answer
-    sqTotalMins = (th%12)*60 + sqTarget.m;
-    renderSetClock();
-    const hOk = h===th, mOk = roundM===sqTarget.m;
-    const hint = !hOk&&!mOk?'Both hands needed moving.':!hOk?'The hour hand was wrong.':'The minute hand was wrong.';
-    showFeedback('sq-feedback', '😊 ' + hint + ' Correct time shown!', false);
+  const th=sqTarget.h%12||12;
+  const{h,m}=getSqHM();
+  const correct=h===th&&m===sqTarget.m;
+  document.getElementById('sq-check').style.visibility='hidden';
+  document.getElementById('sq-drag-hint').style.visibility='hidden';
+  document.getElementById('sq-next').style.visibility='visible';
+  if(correct){ sqScore++; showFeedback('sq-feedback',randFrom(PRAISE),true); }
+  else{
+    sqTotalMins=(th%12)*60+sqTarget.m; renderSetClock();
+    const hint=h!==th&&m!==sqTarget.m?'Both hands needed moving.':h!==th?'The hour hand was wrong.':'The minute hand was wrong.';
+    showFeedback('sq-feedback','😊 '+hint+' Correct time shown!',false);
   }
-
-  updateScore('sq', sqScore, sqTotal);
-  document.getElementById('sq-check').classList.add('hidden');
-  document.getElementById('sq-drag-hint').classList.add('hidden');
-  document.getElementById('sq-next').classList.remove('hidden');
+  updateScore('sq',sqScore,sqTotal);
 }
 
 // ═══════════════════════════════════════
 //  SHARED UTILS
 // ═══════════════════════════════════════
-function showFeedback(id, text, good) {
-  const el = document.getElementById(id);
-  el.textContent = text;
-  el.className = 'feedback ' + (good?'good':'bad');
-  el.classList.remove('hidden');
+function showFeedback(id,text,good){
+  const el=document.getElementById(id);
+  el.textContent=text; el.className='feedback '+(good?'good':'bad');
+}
+function updateScore(prefix,score,total){
+  document.getElementById(prefix+'-score').textContent=score;
+  document.getElementById(prefix+'-total').textContent=total;
+  const pct=total>0?score/total:0;
+  document.getElementById(prefix+'-stars').textContent=pct>=0.8?'🌟🌟🌟':pct>=0.5?'⭐⭐':'⭐';
 }
 
-function updateScore(prefix, score, total) {
-  document.getElementById(prefix+'-score').textContent = score;
-  document.getElementById(prefix+'-total').textContent = total;
-  const pct = total>0 ? score/total : 0;
-  document.getElementById(prefix+'-stars').textContent = pct>=0.8?'🌟🌟🌟':pct>=0.5?'⭐⭐':'⭐';
-}
+// Init: show 10:10 on explore clock
+renderExplore();
 </script>
 </body>
 </html>
