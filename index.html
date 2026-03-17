@@ -230,7 +230,7 @@
   }
   .target-time { font-size:1.25rem; font-weight:900; }
   .th { color:#FF6B6B; } .tm { color:#4ECDC4; } .tsep { color:#aaa; }
-  .target-words { font-size:0.8rem; font-style:italic; }
+  .target-words { font-size:0.85rem; font-style:italic; }
 
   .btn { font-family:'Nunito',sans-serif; font-weight:900; font-size:1rem;
     padding:9px 28px; border-radius:50px; border:none; cursor:pointer; transition:opacity 0.15s; }
@@ -279,7 +279,7 @@
   <div class="tp-state" id="tp-set">
     <div style="position:relative;width:100%;max-width:400px;height:2.6rem;">
       <p id="sq-label" style="position:absolute;inset:0;font-weight:800;color:#aaa;font-size:0.9rem;text-align:center;display:flex;align-items:center;justify-content:center;transition:opacity 0.15s;">I'll give a time — drag the hands to match!</p>
-      <div id="sq-target" class="target-box" style="position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity 0.15s;display:flex;align-items:center;justify-content:center;padding:4px 12px;"></div>
+      <div id="sq-target" class="target-box" style="position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity 0.15s;display:flex;align-items:center;justify-content:center;padding:4px 12px;font-size:0.95rem;gap:4px;line-height:1;"></div>
     </div>
   </div>
 
@@ -742,7 +742,7 @@ function nextSetQuestion(){
   const[h,m]=randFrom(NICE_TIMES); sqTarget={h,m};
   const th=h%12||12;
   document.getElementById('sq-target').innerHTML=
-    `🖐️ Show: <span class="target-time"><span class="th">${pad2(th)}</span><span class="tsep">:</span><span class="tm">${pad2(m)}</span></span> <span class="target-words">(${timeToWords(th,m)})</span>`;
+    `<span style="vertical-align:middle;font-size:0.95rem;font-weight:800;color:#7a5500;">🖐️ Show:</span> <span class="target-time" style="vertical-align:middle;"><span class="th">${pad2(th)}</span><span class="tsep">:</span><span class="tm">${pad2(m)}</span></span> <span class="target-words" style="vertical-align:middle;">(${timeToWords(th,m)})</span>`;
   renderSetClock();
 }
 
