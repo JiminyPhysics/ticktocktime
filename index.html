@@ -640,9 +640,10 @@ function switchQuizMode(mode) {
     const minuteAngle = (exactMins / 60) * Math.PI*2;
     const hourAngle   = ((h % 12) / 12) * Math.PI*2 + (exactMins / 60) * (Math.PI*2/12);
     updateHands(hLine, mLine, hCirc, mCirc, hourAngle, minuteAngle);
+    const dispM = Math.floor(exactMins);  // floor prevents ever showing 60
     document.getElementById('exp-h').textContent = pad2(h);
-    document.getElementById('exp-m').textContent = pad2(Math.round(m));
-    const w = timeToWords(h, Math.round(m));
+    document.getElementById('exp-m').textContent = pad2(dispM);
+    const w = timeToWords(h, dispM);
     document.getElementById('exp-words').textContent = '🕐 ' + w.charAt(0).toUpperCase() + w.slice(1) + '!';
   }
 
@@ -780,7 +781,8 @@ let _sqHands=null;
 })();
 
 function sqGetHM() {
-  const m = ((sqTotalMins%60)+60)%60;
+  const exactMins = ((sqTotalMins%60)+60)%60;
+  const m = Math.floor(exactMins);
   const h = ((Math.floor(((sqTotalMins%720)+720)%720/60))%12)||12;
   return { h, m };
 }
@@ -793,7 +795,7 @@ function renderSetClock() {
   const {hLine,mLine,hCirc,mCirc} = _sqHands;
   updateHands(hLine,mLine,hCirc,mCirc,hourAngle,minuteAngle);
   document.getElementById('sq-h').textContent = pad2(h);
-  document.getElementById('sq-m').textContent = pad2(Math.round(m)%60);
+  document.getElementById('sq-m').textContent = pad2(Math.floor(exactMins));
 }
 
 function startSetQuiz() {
