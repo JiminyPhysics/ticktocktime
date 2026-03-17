@@ -10,7 +10,7 @@ A fun, interactive clock-reading app for children aged 5–7.
 - Plain English time descriptions (quarter past, half past, etc.)
 
 ## Live App
-👉 [Play here](https://YOUR-USERNAME.github.io/ticktocktime)
+👉 [Play here](https://JiminyPhysics.github.io/ticktocktime)
 
 ---
 Made with ❤️ for young learners.
