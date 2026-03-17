@@ -15,8 +15,6 @@
     flex-direction: column;
     align-items: center;
     background: #FFF9F0;
-    background-image: radial-gradient(circle at 20% 20%, #FFE8E8 0%, transparent 40%),
-                      radial-gradient(circle at 80% 80%, #E8F8FF 0%, transparent 40%);
     font-family: 'Nunito', sans-serif;
     overflow: hidden;
     user-select: none; -webkit-user-select: none;
@@ -116,10 +114,8 @@
   #clock-filter-wrap {
     width: 100%;
     max-width: 380px;
-    /* constrain to available height so clock never clips other elements */
     max-height: 100%;
     aspect-ratio: 1;
-    filter: drop-shadow(0 8px 24px rgba(0,0,0,0.13));
     transition: filter 0.3s;
   }
   #clock-zone svg {
@@ -313,7 +309,7 @@
 <!-- Row 3: THE ONE CLOCK — never moves -->
 <div id="clock-zone">
   <div id="clock-filter-wrap">
-    <svg id="main-svg" viewBox="0 0 380 380" xmlns="http://www.w3.org/2000/svg"></svg>
+    <svg id="main-svg" viewBox="-4 -4 388 388" xmlns="http://www.w3.org/2000/svg"></svg>
   </div>
 </div>
 
@@ -435,7 +431,6 @@ function buildClockFace(svg){
     const minVal=(i*5)%60, ang=(i*5/60)*Math.PI*2-Math.PI/2;
     const nx=CX+Math.cos(ang)*MIN_RING_R, ny=CY+Math.sin(ang)*MIN_RING_R;
     const g=svgEl('g');
-    g.appendChild(svgEl('circle',{cx:nx,cy:ny,r:16,fill:'#E0FFFE'}));
     const t=svgEl('text',{x:nx,y:ny,'text-anchor':'middle','dominant-baseline':'central','font-size':13,'font-family':'Nunito,sans-serif','font-weight':900,fill:MIN_COLOR});
     t.textContent=minVal; g.appendChild(t); svg.appendChild(g);
   }
@@ -447,6 +442,8 @@ function buildClockFace(svg){
     const t=svgEl('text',{x:nx,y:ny,'text-anchor':'middle','dominant-baseline':'central','font-size':19,'font-family':'Nunito,sans-serif','font-weight':900,fill:HOUR_COLOR});
     t.textContent=h; g.appendChild(t); svg.appendChild(g);
   }
+  // Outer border drawn last so it sits on top of everything
+  svg.appendChild(svgEl('circle',{cx:CX,cy:CY,r:190,fill:'none',stroke:'#9ADBD6','stroke-width':3}));
 }
 
 // ── Update hand positions ──
@@ -489,8 +486,8 @@ function setMode(mode){
   // Blur clock in read-start
   document.getElementById('clock-filter-wrap').style.filter =
     mode==='read-start'
-      ? 'drop-shadow(0 8px 24px rgba(0,0,0,0.1)) blur(6px)'
-      : 'drop-shadow(0 8px 24px rgba(0,0,0,0.13))';
+      ? 'blur(6px)'
+      : 'none';
 }
 
 // ── Drag system (single, mode-aware) ──
